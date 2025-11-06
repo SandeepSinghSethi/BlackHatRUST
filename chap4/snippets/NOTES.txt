@@ -1,0 +1,32 @@
+#Generics 
+Generics is an implementation of cpp's templates in rust ecosystem , and it works in more strict manner.
+And it gets assigned to individual data types at compile time , hence supporting monomorphism .
+And traits are like default structures that a struct should have like a dog trait , who barks() , do any dog (struct) will we used like this : impl Dog for <OurBreed> , and make the bark func work acc. to the species , this way , we can limit the rewriting the function for each breed , real life example also works like this.
+
+The only usecase for lifetimes is to handle dangling references. 
+Rust uses borrow checker to validate that a lifetime of a block eg 'a with all the other interconnected blocks of liftime eg. 'b , if size of the block of 'a is greater than 'b and both are borrowed somehow, then error occurs , like this: 
+// ---------+-- 'a
+//          |
+//          |
+// -+-- 'b  |
+//  |       |
+// -+       |
+//          |
+//          |
+// ---------+
+If for any scenario we pass a value by reference to a code block which haves a lifetime of its own , then for if multiple references can exists both of multiple lifeties , then errors might occur , as compiler would be confused for the reference of lifetime to return to.
+for this lifetime annotations can be used in place to enfore passing references bound to a certain lifetime.
+like this : fn longest(x: &str, y: &str) -> &str 
+            fn longest<'a>(x: &'a str, y: &'a str) -> &'a str
+
+Rust elision lifetime rules :  with time lifetimes will become more obsolete and will be handled by compiler automatically , and the rules behind the validation of lifetimes is like:
+    1. If a function as one parameter it will get a lifetime <input lifetimes>
+        and with 2 or more params. it will get individual lifetimes.
+    2. In a single param func. the lifetime of the input param will be used as one or more or all output return lifetimes.
+    3. If the param is &self or &mut self , then lifetime of self is used by the output lifetime as well.
+
+data with 'static lifetime can persist without worrying about references and scopes , and this data hard-coded in the binary.
+
+-----------------------------------------
+
+For simplification of 

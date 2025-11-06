@@ -1,0 +1,25 @@
+For executing some tasks that for some reason may or may not block the event loop in between the async calls , then we must use tokie::task::spwan_blocking , as this will execute the block on a seperate thread to prevent execution of this cpu intensive task in the async context and thus allowing all other I/O ops to be executed without blocking the event loop.
+
+Tokio runtime by default have two thread pools :
+    
+    -fixed size threadpool for general async tasks that will not block the event loop,
+    
+    -bounded threadpool for blocking calls like getting a return result from a slow http server like a webpage which is large to compute by the web server , so returned late to the program , in this scenario is tokio::task::spwan_blocking isn't used for this task , it will either crash the prog or make it slow , as it blocks i/o to event loop , so it must be passed to the blocking threadpool.
+
+----------------------------------------------------------------------------------------------------
+
+*SHARING DATA between threads on diff cpus / between async tasks
+
+1. CHANNELS : We can use channels to sharing memory by communicating , unlike mutexes which communicate by sharing memory.
+
+    - oneshot channels: in this a single producer creates result for a single consumer , i.e. spsc channel
+
+    - mpsc channels: multiple producers single consumer channels are used to give many outputs to a receiver channel , like can be used for job scheduling , or for logging purposes of many functions and expecting to aggregate all logs into a single channel , which would be the receiving channel at this point , and can be stored in a file effectively.
+
+    - broadcast channels: these channels are for those tasks where multiple producer sends data to multiple consumers , mpmc channel type. 
+
+    - watch channels: similar to broadcast channel but having only capacity to send 1 value , its like single producer multiple consumer , but only the recent value is stored in the channel for receiving.
+
+
+-----------------------------------------------------------------------------------------------------
+

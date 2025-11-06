@@ -1,0 +1,17 @@
+[package]
+name = "tricoder"
+version = "0.1.0"
+authors = ["Sandy S"]
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.99"
+futures = "0.3.31"
+rayon = "1.11.0"
+reqwest = {version = "0.12.23" , default-features = false, features = ['json','blocking','rustls-tls']}
+serde = {version = "1.0.219" , features = ["derive"]}
+serde_json = "1.0.143"
+thiserror = "2.0.16"
+tokio = {version = "1.47.1",features = ['full']}
+tokio-stream = "0.1.17"
+trust-dns-resolver = "0.23.2"

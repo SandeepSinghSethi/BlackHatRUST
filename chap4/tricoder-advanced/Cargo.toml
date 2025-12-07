@@ -5,14 +5,16 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.100"
+async-trait = "0.1.89"
 clap = {version="4.5.51",features=['derive','env']}
 env = "1.0.1"
 env_logger = "0.11.8"
 log = "0.4.28"
 regex = "1.12.2"
-reqwest = "0.12.24"
-serde = "1.0.228"
+reqwest = {version="0.12.24",features=["json","rustls-tls"],default-features=false}
+serde = {version="1.0.228",features=['derive']}
 serde_json = "1.0.145"
 thiserror = "2.0.17"
 tokio = {version="1.48.0",features=['full']}
+tokio-stream = "0.1.17"
 url = "2.5.7"

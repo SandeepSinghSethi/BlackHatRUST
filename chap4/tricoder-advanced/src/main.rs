@@ -2,6 +2,7 @@ use std::env;
 use clap::Parser;
 
 mod error;
+pub use error::Error;
 mod common_ports;
 mod cli;
 use cli::Commands;

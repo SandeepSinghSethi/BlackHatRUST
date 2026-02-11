@@ -6,6 +6,9 @@ pub use error::Error;
 mod common_ports;
 mod cli;
 use cli::Commands;
+mod dns;
+mod ports;
+mod modules;
 
 
 #[tokio::main(flavor="multi_thread")]
@@ -20,11 +23,11 @@ async fn main() {
 
     match cli.commands{
         Commands::Modules(_) =>{
-            cli::modules().await;
+            cli::modules();
         }
 
         Commands::Scan(scan_args) =>{
-            cli::scan(scan_args).await;
+            cli::scan(&scan_args.target).await;
         }
     }
     log::info!("This is informational , working fine!");    

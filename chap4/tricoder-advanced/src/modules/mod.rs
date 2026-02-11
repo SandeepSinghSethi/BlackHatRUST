@@ -1,8 +1,9 @@
+use std::vec;
+
 use crate::Error;
 use async_trait::async_trait;
-use reqwest::Client;
 
-mod http;
+// mod http;
 mod subdomains;
 
 pub trait Module{
@@ -10,12 +11,27 @@ pub trait Module{
     fn description(&self) ->String;
 }
 
+// so using dyn is like storing the object into a pointer structure , so that compiler would know that at compile time , whats the size of the values getting stored in Vec<>
+// Box stores everything on heap for simpler conventions for compiler
+// ❌ Error: doesn't have a size known at compile-time
+// let v: Vec<dyn HttpModule> = vec![DsStoreDisclosure::new()];
+// ✅ Works: Box<dyn HttpModule> has known size (pointer size)
+// let v: Vec<Box<dyn HttpModule>> = vec![Box::new(DsStoreDisclosure::new())];
+pub fn all_subdomains_module() -> Vec<Box<dyn SubdomainModule>> {
+    return vec![
+        Box::new(subdomains::Crtsh::new()),
+        Box::new(subdomains::WebArchive::new())
+    ]
+}
+
+
+
 /// SUBDOMAINS///
 /// 
 // with this subdomainmodule will have 3 func: name,desc, enumerate...
 #[async_trait]
 pub trait SubdomainModule: Module{ // subdomainModule requires module to be init .
-    fn enumerate(&self,domain: &str) ->Result<Vec<String>,Error>;
+    async fn enumerate(&self,domain: &str) ->Result<Vec<String>,Error>;
 }
 
 #[derive(Debug,Clone)]
@@ -32,15 +48,15 @@ pub struct Port{
 }
 
 /// //// //// ///
-/// //// //// ///
+/// //// ///    / ///
 
 /// HTTP ///
 /// 
 // with this HttpModule trait will have 3 functions: name, desc, scan
-#[async_trait]
-pub trait HttpModule: Module{
-    fn scan(&self,http_client: &Client,endpoint: &str)-> Result<Option<HttpFinding>,Error>;
-}
+// #[async_trait]
+// pub trait HttpModule: Module{
+//     fn scan(&self,http_client: &Client,endpoint: &str)-> Result<Option<HttpFinding>,Error>;
+// }
 
 
 #[derive(Debug,Clone)]
@@ -60,6 +76,3 @@ pub enum HttpFinding{
     Cve2018_7600(String),
     ElasticsearchUnauthenticatedAccess(String),
 }
-
-/// //// //// ///
-/// //// //// ///
